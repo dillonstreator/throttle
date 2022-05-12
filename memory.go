@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+//MemoryThrottler in memory throttler
 type MemoryThrottler struct {
 	mus     map[string]*sync.Mutex
 	history map[string]time.Time
@@ -15,6 +16,7 @@ type MemoryThrottler struct {
 
 var _ Throttler = (*MemoryThrottler)(nil)
 
+//NewMemoryThrottler creates a new MemoryThrottler
 func NewMemoryThrottler() *MemoryThrottler {
 	return &MemoryThrottler{
 		mus:     map[string]*sync.Mutex{},
@@ -22,14 +24,17 @@ func NewMemoryThrottler() *MemoryThrottler {
 	}
 }
 
+//DefaultMemoryThrottler a default MemoryThrottler
 var DefaultMemoryThrottler = NewMemoryThrottler()
 
+//New curried in memory throttling
 func (m *MemoryThrottler) New(key string, duration time.Duration, fn func(ctx context.Context) error) func(context.Context) error {
 	return func(ctx context.Context) error {
 		return m.do(ctx, key, duration, fn)
 	}
 }
 
+//Do inline in memory throttling
 func (m *MemoryThrottler) Do(ctx context.Context, key string, duration time.Duration, fn func(ctx context.Context) error) error {
 	return m.do(ctx, key, duration, fn)
 }
