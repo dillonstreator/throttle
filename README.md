@@ -1,11 +1,11 @@
-# [throttle](https://github.com/DillonStreator/throttle)
+# [throttle](https://github.com/dillonstreator/throttle)
 
 A simple golang throttle utility for redis and in memory, allowing inline and curried throttling.
 
 ## Installation
 
 ```sh
-go get github.com/DillonStreator/throttle
+go get github.com/dillonstreator/throttle
 ```
 
 ## Usage
@@ -19,29 +19,35 @@ The error `throttle.ErrThrottled` is returned in the event that a function call 
 ```go
 package main
 
-import "github.com/DillonStreator/throttle"
+import (
+	"context"
+	"fmt"
+	"time"
+
+	"github.com/dillonstreator/throttle"
+)
 
 func main() {
-    throttler := throttle.NewMemoryThrottler()
+	throttler := throttle.NewMemoryThrottler()
 
-    key := "example:do"
+	key := "example:do"
 	fn := func(ctx context.Context) error {
 		fmt.Printf("called %s\n", key)
 		return nil
 	}
 
-    err := throttler.Do(ctx, key, time.Second, fn)
-    fmt.Println(err) // nil
+	err := throttler.Do(ctx, key, time.Second, fn)
+	fmt.Println(err) // nil
 
-    time.Sleep(time.Millisecond * 500)
+	time.Sleep(time.Millisecond * 500)
 
-    err = throttler.Do(ctx, key, time.Second, fn)
-    fmt.Println(err) // throttle.ErrThrottled
+	err = throttler.Do(ctx, key, time.Second, fn)
+	fmt.Println(err) // throttle.ErrThrottled
 
-    time.Sleep(time.Millisecond * 500)
+	time.Sleep(time.Millisecond * 500)
 
-    err = throttler.Do(ctx, key, time.Second, fn)
-    fmt.Println(err) // nil
+	err = throttler.Do(ctx, key, time.Second, fn)
+	fmt.Println(err) // nil
 }
 ```
 
@@ -50,11 +56,17 @@ func main() {
 ```go
 package main
 
-import "github.com/DillonStreator/throttle"
+import (
+	"context"
+	"fmt"
+	"time"
+
+	"github.com/dillonstreator/throttle"
+)
 
 func main() {
-    throttler := throttle.NewMemoryThrottler()
-    
+	throttler := throttle.NewMemoryThrottler()
+
 	key := "example:new"
 	fn := throttler.New(key, time.Second, func(ctx context.Context) error {
 		fmt.Printf("called %s\n", key)

@@ -1,4 +1,4 @@
-module github.com/DillonStreator/throttle
+module github.com/dillonstreator/throttle
 
 go 1.20
 
